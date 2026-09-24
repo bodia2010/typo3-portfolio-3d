@@ -4,22 +4,27 @@ import React, { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
+// Safe helper to create circular sprite texture
 function useCircleTexture() {
   return useMemo(() => {
     if (typeof window === 'undefined') return null
-    const canvas = document.createElement('canvas')
-    canvas.width = 64
-    canvas.height = 64
-    const ctx = canvas.getContext('2d')
-    if (ctx) {
-      const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
-      gradient.addColorStop(0, 'rgba(255, 255, 255, 1)')
-      gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.5)')
-      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)')
-      ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, 64, 64)
+    try {
+      const canvas = document.createElement('canvas')
+      canvas.width = 64
+      canvas.height = 64
+      const ctx = canvas.getContext('2d')
+      if (ctx) {
+        const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 1)')
+        gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.5)')
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)')
+        ctx.fillStyle = gradient
+        ctx.fillRect(0, 0, 64, 64)
+      }
+      return new THREE.CanvasTexture(canvas)
+    } catch (e) {
+      return null
     }
-    return new THREE.CanvasTexture(canvas)
   }, [])
 }
 
@@ -30,6 +35,7 @@ function ParticleWave() {
   const scrollRef = useRef(0)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
     const handleScroll = () => {
       scrollRef.current = window.scrollY || document.documentElement.scrollTop
     }
@@ -51,12 +57,10 @@ function ParticleWave() {
 
     for (let x = 0; x < rows; x++) {
       for (let z = 0; z < cols; z++) {
-        // Базовые позиции сетки
         pos[i * 3] = (x - rows / 2) * 0.6
         pos[i * 3 + 1] = -3.2
         pos[i * 3 + 2] = (z - cols / 2) * 0.6
 
-        // Направления взрыва/разлёта
         offsets[i * 3] = (Math.random() - 0.5) * 8
         offsets[i * 3 + 1] = (Math.random() - 0.5) * 6
         offsets[i * 3 + 2] = (Math.random() - 0.5) * 8
@@ -77,10 +81,11 @@ function ParticleWave() {
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime()
+    // Safe access to scroll height
     const maxScroll = typeof document !== 'undefined' ? (document.documentElement.scrollHeight - window.innerHeight) : 1
     const scrollProgress = Math.min(Math.max((scrollRef.current || 0) / (maxScroll || 1), 0), 1)
-
     const disperseFactor = scrollProgress * 1.8 
+
     const positionAttribute = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute
     const array = positionAttribute.array as Float32Array
 
@@ -105,7 +110,6 @@ function ParticleWave() {
     }
 
     positionAttribute.needsUpdate = true
-
     pointsRef.current.rotation.y = THREE.MathUtils.lerp(
       pointsRef.current.rotation.y,
       state.pointer.x * 0.15 + scrollProgress * 0.5,
@@ -116,8 +120,14 @@ function ParticleWave() {
   return (
     <points ref={pointsRef}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
-        <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
+        <bufferAttribute
+          attach="attributes-position"
+          args={[positions, 3]}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          args={[colors, 3]}
+        />
       </bufferGeometry>
       <pointsMaterial 
         size={0.18} 

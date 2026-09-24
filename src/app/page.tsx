@@ -6,7 +6,6 @@ import {
   Cpu,
   RefreshCw,
   Server,
-  Database,
   Terminal,
   Bot,
   ShieldCheck,
@@ -19,8 +18,10 @@ import {
   Code2,
 } from 'lucide-react'
 
+// Optimized dynamic import with fallback to prevent layout shift and handle hydration
 const ThreeDScene = dynamic(() => import('@/components/ThreeDScene'), {
   ssr: false,
+  loading: () => <div style={{ position: 'fixed', inset: 0, background: '#020C1B', zIndex: 0 }} />
 })
 
 export default function Home() {
@@ -111,7 +112,6 @@ export default function Home() {
     >
       <ThreeDScene />
 
-      {/* Floating Glass Navigation */}
       <header
         style={{
           position: 'fixed',
@@ -141,9 +141,9 @@ export default function Home() {
         </div>
 
         <nav style={{ display: 'flex', gap: '22px', fontSize: '13px', fontWeight: 500, color: '#94A3B8' }}>
-          <a href="#services" style={{ color: '#CBD5E1', textDecoration: 'none', transition: 'color 0.2s' }}>Services</a>
-          <a href="#stack" style={{ color: '#CBD5E1', textDecoration: 'none', transition: 'color 0.2s' }}>Tech Stack</a>
-          <a href="#contact" style={{ color: '#CBD5E1', textDecoration: 'none', transition: 'color 0.2s' }}>Contact</a>
+          <a href="#services" style={{ color: '#CBD5E1', textDecoration: 'none' }}>Services</a>
+          <a href="#stack" style={{ color: '#CBD5E1', textDecoration: 'none' }}>Tech Stack</a>
+          <a href="#contact" style={{ color: '#CBD5E1', textDecoration: 'none' }}>Contact</a>
         </nav>
 
         <a
@@ -161,7 +161,6 @@ export default function Home() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '6px',
-            boxShadow: '0 4px 15px rgba(255, 135, 0, 0.3)',
           }}
         >
           <Mail className="w-3.5 h-3.5" />
@@ -169,7 +168,6 @@ export default function Home() {
         </a>
       </header>
 
-      {/* Main Container */}
       <main
         style={{
           position: 'relative',
@@ -179,9 +177,7 @@ export default function Home() {
           padding: '140px 24px 100px 24px',
         }}
       >
-        {/* HERO SECTION */}
         <section style={{ minHeight: '85vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '32px' }}>
-          
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '9999px', background: 'rgba(255, 135, 0, 0.1)', border: '1px solid rgba(255, 135, 0, 0.3)', width: 'fit-content' }}>
             <Sparkles className="w-4 h-4 text-[#FF8700]" />
             <span style={{ color: '#FF8700', fontSize: '13px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase' }}>
@@ -190,192 +186,62 @@ export default function Home() {
           </div>
 
           <div>
-            <h1
-              style={{
-                fontSize: 'clamp(44px, 7vw, 76px)',
-                fontWeight: 900,
-                lineHeight: 1.08,
-                margin: '0 0 20px 0',
-                letterSpacing: '-1.5px',
-              }}
-            >
+            <h1 style={{ fontSize: 'clamp(44px, 7vw, 76px)', fontWeight: 900, lineHeight: 1.08, margin: '0 0 20px 0', letterSpacing: '-1.5px' }}>
               Ihor Bondarenko
             </h1>
-            <p
-              style={{
-                fontSize: 'clamp(18px, 2.5vw, 22px)',
-                color: '#94A3B8',
-                maxWidth: '780px',
-                lineHeight: 1.6,
-                margin: 0,
-              }}
-            >
+            <p style={{ fontSize: 'clamp(18px, 2.5vw, 22px)', color: '#94A3B8', maxWidth: '780px', lineHeight: 1.6, margin: 0 }}>
               Specializing in high-performance <span style={{ color: '#FFFFFF', fontWeight: 600 }}>TYPO3 CMS</span> solutions, custom <span style={{ color: '#FF8700', fontWeight: 600 }}>Extbase & Fluid</span> extensions, enterprise version upgrades (<span style={{ color: '#00A3FF', fontWeight: 600 }}>v9 → v13/v14</span>), and cutting-edge <span style={{ color: '#FFFFFF', fontWeight: 600 }}>AI/MCP workflows</span>.
             </p>
           </div>
 
-          {/* Action Buttons */}
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
-            <a
-              href="mailto:bondarenko.igor.contact@gmail.com"
-              style={{
-                background: 'linear-gradient(135deg, #FF8700 0%, #FF9B26 100%)',
-                color: '#000000',
-                padding: '14px 30px',
-                borderRadius: '12px',
-                fontWeight: 700,
-                fontSize: '14px',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 6px 25px rgba(255, 135, 0, 0.35)',
-              }}
-            >
+            <a href="mailto:bondarenko.igor.contact@gmail.com" style={{ background: 'linear-gradient(135deg, #FF8700 0%, #FF9B26 100%)', color: '#000000', padding: '14px 30px', borderRadius: '12px', fontWeight: 700, fontSize: '14px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
               <Mail className="w-4 h-4" />
               <span>Contact Me</span>
             </a>
-
-            <a
-              href="https://linkedin.com/in/isbondarenko"
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                color: '#FFFFFF',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                padding: '14px 28px',
-                borderRadius: '12px',
-                fontWeight: 600,
-                fontSize: '14px',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                backdropFilter: 'blur(10px)',
-              }}
-            >
+            <a href="https://linkedin.com/in/isbondarenko" target="_blank" rel="noreferrer" style={{ background: 'rgba(255, 255, 255, 0.05)', color: '#FFFFFF', border: '1px solid rgba(255, 255, 255, 0.15)', padding: '14px 28px', borderRadius: '12px', fontWeight: 600, fontSize: '14px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', backdropFilter: 'blur(10px)' }}>
               <ExternalLink className="w-4 h-4 text-[#00A3FF]" />
               <span>LinkedIn Profile</span>
             </a>
-
-            <a
-              href="mailto:bondarenko.igor.contact@gmail.com?subject=Request%20CV%20-%20Ihor%20Bondarenko"
-              style={{
-                background: 'rgba(255, 255, 255, 0.03)',
-                color: '#CBD5E1',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                padding: '14px 24px',
-                borderRadius: '12px',
-                fontWeight: 600,
-                fontSize: '14px',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-              }}
-            >
+            <a href="mailto:bondarenko.igor.contact@gmail.com?subject=Request%20CV" style={{ background: 'rgba(255, 255, 255, 0.03)', color: '#CBD5E1', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '14px 24px', borderRadius: '12px', fontWeight: 600, fontSize: '14px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
               <Download className="w-4 h-4 text-[#94A3B8]" />
               <span>Download CV</span>
             </a>
           </div>
 
-          {/* Key Metrics Banner */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '18px',
-              marginTop: '20px',
-            }}
-          >
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '18px', marginTop: '20px' }}>
             {metrics.map((m, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: 'rgba(15, 23, 42, 0.55)',
-                  backdropFilter: 'blur(20px)',
-                  WebkitBackdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '16px',
-                  padding: '24px',
-                  boxShadow: '0 8px 30px rgba(0, 0, 0, 0.4)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                }}
-              >
+              <div key={idx} style={{ background: 'rgba(15, 23, 42, 0.55)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '32px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.5px' }}>
-                    {m.value}
-                  </span>
-                  <div style={{ padding: '8px', borderRadius: '10px', background: 'rgba(255, 255, 255, 0.04)' }}>
-                    {m.icon}
-                  </div>
+                  <span style={{ fontSize: '32px', fontWeight: 900, color: '#FFFFFF' }}>{m.value}</span>
+                  <div style={{ padding: '8px', borderRadius: '10px', background: 'rgba(255, 255, 255, 0.04)' }}>{m.icon}</div>
                 </div>
                 <div style={{ fontSize: '15px', fontWeight: 700, color: '#F1F5F9' }}>{m.label}</div>
                 <div style={{ fontSize: '13px', color: '#94A3B8', lineHeight: 1.5 }}>{m.subtext}</div>
               </div>
             ))}
           </div>
-
         </section>
 
-        {/* SECTION: KEY SERVICES & IMPACT */}
         <section id="services" style={{ marginTop: '110px' }}>
           <div style={{ marginBottom: '40px' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#FF8700', fontSize: '13px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '8px' }}>
               <Workflow className="w-4 h-4" />
               <span>Core Specialization</span>
             </div>
-            <h2 style={{ fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 800, margin: 0, letterSpacing: '-0.5px' }}>
-              Key Services & Engineering Impact
-            </h2>
+            <h2 style={{ fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 800, margin: 0 }}>Key Services & Engineering Impact</h2>
           </div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))',
-              gap: '24px',
-            }}
-          >
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))', gap: '24px' }}>
             {services.map((srv, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: 'rgba(15, 23, 42, 0.5)',
-                  backdropFilter: 'blur(20px)',
-                  WebkitBackdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '20px',
-                  padding: '32px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  boxShadow: '0 12px 40px rgba(0, 0, 0, 0.35)',
-                  transition: 'all 0.3s ease',
-                }}
-              >
+              <div key={idx} style={{ background: 'rgba(15, 23, 42, 0.5)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '20px', padding: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                    <div style={{ padding: '12px', borderRadius: '14px', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                      {srv.icon}
-                    </div>
-                    <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', padding: '4px 10px', borderRadius: '9999px', background: 'rgba(255, 135, 0, 0.1)', color: '#FF8700', border: '1px solid rgba(255, 135, 0, 0.25)' }}>
-                      {srv.badge}
-                    </span>
+                    <div style={{ padding: '12px', borderRadius: '14px', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>{srv.icon}</div>
+                    <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', padding: '4px 10px', borderRadius: '9999px', background: 'rgba(255, 135, 0, 0.1)', color: '#FF8700', border: '1px solid rgba(255, 135, 0, 0.25)' }}>{srv.badge}</span>
                   </div>
-
-                  <h3 style={{ fontSize: '21px', fontWeight: 700, margin: '0 0 12px 0', color: '#FFFFFF' }}>
-                    {srv.title}
-                  </h3>
-
-                  <p style={{ color: '#94A3B8', fontSize: '14px', lineHeight: 1.6, margin: '0 0 24px 0' }}>
-                    {srv.desc}
-                  </p>
+                  <h3 style={{ fontSize: '21px', fontWeight: 700, margin: '0 0 12px 0' }}>{srv.title}</h3>
+                  <p style={{ color: '#94A3B8', fontSize: '14px', lineHeight: 1.6, margin: '0 0 24px 0' }}>{srv.desc}</p>
                 </div>
-
                 <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {srv.highlights.map((h, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#CBD5E1' }}>
@@ -389,64 +255,24 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SECTION: TECH STACK WITH ICONS */}
         <section id="stack" style={{ marginTop: '120px' }}>
           <div style={{ marginBottom: '40px' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#00A3FF', fontSize: '13px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '8px' }}>
-              <Cpu className="w-4 h-4" />
+              <Workflow className="w-4 h-4" />
               <span>Technology Matrix</span>
             </div>
-            <h2 style={{ fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 800, margin: 0, letterSpacing: '-0.5px' }}>
-              Architected for Performance & Scalability
-            </h2>
+            <h2 style={{ fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 800, margin: 0 }}>Architected for Performance & Scalability</h2>
           </div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: '20px',
-            }}
-          >
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
             {techCategories.map((cat, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: 'rgba(15, 23, 42, 0.5)',
-                  backdropFilter: 'blur(20px)',
-                  WebkitBackdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '20px',
-                  padding: '28px',
-                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.35)',
-                }}
-              >
+              <div key={idx} style={{ background: 'rgba(15, 23, 42, 0.5)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '20px', padding: '28px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-                  <div style={{ padding: '8px', borderRadius: '10px', background: 'rgba(255, 255, 255, 0.05)' }}>
-                    {cat.icon}
-                  </div>
-                  <h3 style={{ fontSize: '17px', fontWeight: 700, margin: 0, color: '#FFFFFF' }}>
-                    {cat.title}
-                  </h3>
+                  <div style={{ padding: '8px', borderRadius: '10px', background: 'rgba(255, 255, 255, 0.05)' }}>{cat.icon}</div>
+                  <h3 style={{ fontSize: '17px', fontWeight: 700, margin: 0 }}>{cat.title}</h3>
                 </div>
-
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {cat.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      style={{
-                        display: 'inline-block',
-                        background: 'rgba(255, 255, 255, 0.04)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        padding: '6px 12px',
-                        borderRadius: '8px',
-                        fontSize: '12px',
-                        fontWeight: 500,
-                        color: '#E2E8F0',
-                      }}
-                    >
-                      {tag}
-                    </span>
+                    <span key={i} style={{ display: 'inline-block', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 500, color: '#E2E8F0' }}>{tag}</span>
                   ))}
                 </div>
               </div>
@@ -454,82 +280,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SECTION: CALL TO ACTION & CONTACT */}
-        <section
-          id="contact"
-          style={{
-            marginTop: '120px',
-            background: 'radial-gradient(ellipse at center, rgba(255, 135, 0, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            border: '1px solid rgba(255, 135, 0, 0.25)',
-            borderRadius: '28px',
-            padding: '60px 32px',
-            textAlign: 'center',
-            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)',
-          }}
-        >
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '9999px', background: 'rgba(255, 135, 0, 0.15)', border: '1px solid rgba(255, 135, 0, 0.3)', marginBottom: '20px' }}>
-            <Sparkles className="w-4 h-4 text-[#FF8700]" />
-            <span style={{ color: '#FF8700', fontSize: '12px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase' }}>
-              Available for Contracts & Remote Roles
-            </span>
-          </div>
-
-          <h2 style={{ fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 900, margin: '0 0 16px 0', letterSpacing: '-1px' }}>
-            Let&apos;s Engineer Your Next TYPO3 Milestone.
-          </h2>
-
-          <p style={{ color: '#94A3B8', maxWidth: '600px', margin: '0 auto 36px auto', fontSize: '16px', lineHeight: 1.6 }}>
-            Looking for a Senior TYPO3 Developer for major version upgrades, complex Extbase extension architecture, or modern DevOps workflows?
-          </p>
-
+        <section id="contact" style={{ marginTop: '120px', background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255, 135, 0, 0.25)', borderRadius: '28px', padding: '60px 32px', textAlign: 'center' }}>
+          <h2 style={{ fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 900, margin: '0 0 16px 0' }}>Let&apos;s Engineer Your Next TYPO3 Milestone.</h2>
+          <p style={{ color: '#94A3B8', maxWidth: '600px', margin: '0 auto 36px auto', fontSize: '16px' }}>Available for Contracts & Remote Roles globally.</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-            <a
-              href="mailto:bondarenko.igor.contact@gmail.com"
-              style={{
-                background: 'linear-gradient(135deg, #FF8700 0%, #FF9B26 100%)',
-                color: '#000000',
-                padding: '16px 36px',
-                borderRadius: '12px',
-                fontWeight: 700,
-                fontSize: '15px',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 6px 30px rgba(255, 135, 0, 0.4)',
-              }}
-            >
-              <Mail className="w-5 h-5" />
-              <span>bondarenko.igor.contact@gmail.com</span>
-            </a>
-
-            <a
-              href="https://linkedin.com/in/isbondarenko"
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                color: '#FFFFFF',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                padding: '16px 28px',
-                borderRadius: '12px',
-                fontWeight: 600,
-                fontSize: '15px',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-              }}
-            >
-              <ExternalLink className="w-5 h-5 text-[#00A3FF]" />
-              <span>LinkedIn</span>
-            </a>
+            <a href="mailto:bondarenko.igor.contact@gmail.com" style={{ background: 'linear-gradient(135deg, #FF8700 0%, #FF9B26 100%)', color: '#000000', padding: '16px 36px', borderRadius: '12px', fontWeight: 700, fontSize: '15px', textDecoration: 'none' }}>bondarenko.igor.contact@gmail.com</a>
           </div>
         </section>
 
-        {/* Minimal Footer */}
         <footer style={{ marginTop: '80px', textAlign: 'center', color: '#64748B', fontSize: '13px' }}>
           © {new Date().getFullYear()} Ihor Bondarenko. Built with Next.js, Three.js & Tailwind CSS.
         </footer>
