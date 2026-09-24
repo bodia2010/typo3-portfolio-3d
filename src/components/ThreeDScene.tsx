@@ -1,0 +1,149 @@
+'use client'
+
+import React, { useRef, useMemo, useEffect } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
+
+function useCircleTexture() {
+  return useMemo(() => {
+    if (typeof window === 'undefined') return null
+    const canvas = document.createElement('canvas')
+    canvas.width = 64
+    canvas.height = 64
+    const ctx = canvas.getContext('2d')
+    if (ctx) {
+      const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
+      gradient.addColorStop(0, 'rgba(255, 255, 255, 1)')
+      gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.5)')
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)')
+      ctx.fillStyle = gradient
+      ctx.fillRect(0, 0, 64, 64)
+    }
+    return new THREE.CanvasTexture(canvas)
+  }, [])
+}
+
+function ParticleWave() {
+  const count = 4000
+  const pointsRef = useRef<THREE.Points>(null!)
+  const circleTexture = useCircleTexture()
+  const scrollRef = useRef(0)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      scrollRef.current = window.scrollY || document.documentElement.scrollTop
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const [positions, colors, randomOffsets] = useMemo(() => {
+    const pos = new Float32Array(count * 3)
+    const col = new Float32Array(count * 3)
+    const offsets = new Float32Array(count * 3)
+    const colorOrange = new THREE.Color('#FF8700')
+    const colorBlue = new THREE.Color('#005596')
+    const colorDark = new THREE.Color('#020C1B')
+
+    let i = 0
+    const rows = 80
+    const cols = 50
+
+    for (let x = 0; x < rows; x++) {
+      for (let z = 0; z < cols; z++) {
+        // Базовые позиции сетки
+        pos[i * 3] = (x - rows / 2) * 0.6
+        pos[i * 3 + 1] = -3.2
+        pos[i * 3 + 2] = (z - cols / 2) * 0.6
+
+        // Направления взрыва/разлёта
+        offsets[i * 3] = (Math.random() - 0.5) * 8
+        offsets[i * 3 + 1] = (Math.random() - 0.5) * 6
+        offsets[i * 3 + 2] = (Math.random() - 0.5) * 8
+
+        const mixFactor = Math.random()
+        let finalColor = colorDark
+        if (mixFactor > 0.85) finalColor = colorOrange
+        else if (mixFactor > 0.4) finalColor = colorBlue
+
+        col[i * 3] = finalColor.r
+        col[i * 3 + 1] = finalColor.g
+        col[i * 3 + 2] = finalColor.b
+        i++
+      }
+    }
+    return [pos, col, offsets]
+  }, [])
+
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime()
+    const maxScroll = typeof document !== 'undefined' ? (document.documentElement.scrollHeight - window.innerHeight) : 1
+    const scrollProgress = Math.min(Math.max((scrollRef.current || 0) / (maxScroll || 1), 0), 1)
+
+    const disperseFactor = scrollProgress * 1.8 
+    const positionAttribute = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute
+    const array = positionAttribute.array as Float32Array
+
+    let i = 0
+    const rows = 80
+    const cols = 50
+
+    for (let x = 0; x < rows; x++) {
+      for (let z = 0; z < cols; z++) {
+        const u = x * 0.1
+        const v = z * 0.1
+        
+        const baseX = (x - rows / 2) * 0.6
+        const baseY = Math.sin(u + time * 0.8) * 0.4 + Math.cos(v + time * 0.5) * 0.3 - 3.2
+        const baseZ = (z - cols / 2) * 0.6
+
+        array[i * 3] = baseX + randomOffsets[i * 3] * disperseFactor
+        array[i * 3 + 1] = baseY + randomOffsets[i * 3 + 1] * disperseFactor
+        array[i * 3 + 2] = baseZ + randomOffsets[i * 3 + 2] * disperseFactor
+        i++
+      }
+    }
+
+    positionAttribute.needsUpdate = true
+
+    pointsRef.current.rotation.y = THREE.MathUtils.lerp(
+      pointsRef.current.rotation.y,
+      state.pointer.x * 0.15 + scrollProgress * 0.5,
+      0.05
+    )
+  })
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial 
+        size={0.18} 
+        vertexColors 
+        transparent={true}
+        opacity={0.85} 
+        map={circleTexture || undefined}
+        alphaTest={0.01}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+        sizeAttenuation={true} 
+      />
+    </points>
+  )
+}
+
+export default function ThreeDScene() {
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', background: '#020C1B' }}>
+      <Canvas 
+        camera={{ position: [0, 4, 12], fov: 60 }}
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+      >
+        <ambientLight intensity={0.5} />
+        <ParticleWave />
+      </Canvas>
+    </div>
+  )
+}

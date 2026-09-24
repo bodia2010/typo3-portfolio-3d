@@ -1,0 +1,35 @@
+export const resume_data = {
+  name: "Ihor Bondarenko",
+  title: "Senior TYPO3 Developer",
+  specializations: [
+    "TYPO3 Integration",
+    "Extbase & Fluid Development",
+    "TYPO3 Versions Migration (v9 → v13/v14)"
+  ],
+  technologies: [
+    "TYPO3 CMS",
+    "Extbase",
+    "Fluid",
+    "Docker",
+    "GitLab",
+    "Linux/Debian",
+    "PHP 8",
+    "GSAP/ScrollTrigger",
+    "React Three Fiber",
+    "Next.js"
+  ],
+  projects: [
+    {
+      name: "TYPO3 Migration (v9 → v13)",
+      description: "Complete migration of a TYPO3 9.5 installation to TYPO3 13",
+      tools: ["Docker", "Git", "TYPO3 Extbase"]
+    }
+  ],
+  expertise: [
+    {
+      area: "3D Portfolio Animation",
+      style: "Draftly.space-inspired",
+      technologies: ["GSAP ScrollTrigger", "React Three Fiber", "Glassmorphism"]
+    }
+  ]
+};
