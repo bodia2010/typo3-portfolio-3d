@@ -4,7 +4,6 @@ import React, { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-// Safe helper to create circular sprite texture
 function useCircleTexture() {
   return useMemo(() => {
     if (typeof window === 'undefined') return null
@@ -16,7 +15,7 @@ function useCircleTexture() {
       if (ctx) {
         const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
         gradient.addColorStop(0, 'rgba(255, 255, 255, 1)')
-        gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.5)')
+        gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.6)')
         gradient.addColorStop(1, 'rgba(255, 255, 255, 0)')
         ctx.fillStyle = gradient
         ctx.fillRect(0, 0, 64, 64)
@@ -29,7 +28,7 @@ function useCircleTexture() {
 }
 
 function ParticleWave() {
-  const count = 4000
+  const count = 11200
   const pointsRef = useRef<THREE.Points>(null!)
   const circleTexture = useCircleTexture()
   const scrollRef = useRef(0)
@@ -48,18 +47,18 @@ function ParticleWave() {
     const col = new Float32Array(count * 3)
     const offsets = new Float32Array(count * 3)
     const colorOrange = new THREE.Color('#FF8700')
-    const colorBlue = new THREE.Color('#005596')
-    const colorDark = new THREE.Color('#020C1B')
+    const colorBlue = new THREE.Color('#0070F3')
+    const colorDark = new THREE.Color('#0A192F')
 
     let i = 0
-    const rows = 80
-    const cols = 50
+    const rows = 140
+    const cols = 80
 
     for (let x = 0; x < rows; x++) {
       for (let z = 0; z < cols; z++) {
-        pos[i * 3] = (x - rows / 2) * 0.6
+        pos[i * 3] = (x - rows / 2) * 0.65
         pos[i * 3 + 1] = -3.2
-        pos[i * 3 + 2] = (z - cols / 2) * 0.6
+        pos[i * 3 + 2] = (z - cols / 2) * 0.65
 
         offsets[i * 3] = (Math.random() - 0.5) * 8
         offsets[i * 3 + 1] = (Math.random() - 0.5) * 6
@@ -67,8 +66,8 @@ function ParticleWave() {
 
         const mixFactor = Math.random()
         let finalColor = colorDark
-        if (mixFactor > 0.85) finalColor = colorOrange
-        else if (mixFactor > 0.4) finalColor = colorBlue
+        if (mixFactor > 0.82) finalColor = colorOrange
+        else if (mixFactor > 0.35) finalColor = colorBlue
 
         col[i * 3] = finalColor.r
         col[i * 3 + 1] = finalColor.g
@@ -77,11 +76,10 @@ function ParticleWave() {
       }
     }
     return [pos, col, offsets]
-  }, [])
+  }, [count])
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime()
-    // Safe access to scroll height
     const maxScroll = typeof document !== 'undefined' ? (document.documentElement.scrollHeight - window.innerHeight) : 1
     const scrollProgress = Math.min(Math.max((scrollRef.current || 0) / (maxScroll || 1), 0), 1)
     const disperseFactor = scrollProgress * 1.8 
@@ -90,17 +88,17 @@ function ParticleWave() {
     const array = positionAttribute.array as Float32Array
 
     let i = 0
-    const rows = 80
-    const cols = 50
+    const rows = 140
+    const cols = 80
 
     for (let x = 0; x < rows; x++) {
       for (let z = 0; z < cols; z++) {
         const u = x * 0.1
         const v = z * 0.1
         
-        const baseX = (x - rows / 2) * 0.6
-        const baseY = Math.sin(u + time * 0.8) * 0.4 + Math.cos(v + time * 0.5) * 0.3 - 3.2
-        const baseZ = (z - cols / 2) * 0.6
+        const baseX = (x - rows / 2) * 0.65
+        const baseY = Math.sin(u + time * 0.8) * 0.45 + Math.cos(v + time * 0.5) * 0.35 - 3.2
+        const baseZ = (z - cols / 2) * 0.65
 
         array[i * 3] = baseX + randomOffsets[i * 3] * disperseFactor
         array[i * 3 + 1] = baseY + randomOffsets[i * 3 + 1] * disperseFactor
@@ -130,10 +128,10 @@ function ParticleWave() {
         />
       </bufferGeometry>
       <pointsMaterial 
-        size={0.18} 
+        size={0.22} 
         vertexColors 
         transparent={true}
-        opacity={0.85} 
+        opacity={0.95} 
         map={circleTexture || undefined}
         alphaTest={0.01}
         depthWrite={false}
@@ -146,12 +144,23 @@ function ParticleWave() {
 
 export default function ThreeDScene() {
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', background: '#020C1B' }}>
+    <div 
+      style={{ 
+        position: 'fixed', 
+        inset: 0, 
+        zIndex: 0, 
+        pointerEvents: 'none', 
+        background: '#020C1B',
+        // Expanded mask radius so particles remain visible across the screen and fade smoothly near borders
+        maskImage: 'radial-gradient(circle at 50% 50%, black 65%, transparent 100%)',
+        WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 65%, transparent 100%)'
+      }}
+    >
       <Canvas 
-        camera={{ position: [0, 4, 12], fov: 60 }}
+        camera={{ position: [0, 1.5, 9], fov: 60 }}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >
-        <ambientLight intensity={0.5} />
+        <ambientLight intensity={0.6} />
         <ParticleWave />
       </Canvas>
     </div>
